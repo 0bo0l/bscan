@@ -2,7 +2,7 @@
 import os
 
 os.system("clear")
-print("\033[38;5;27m" + "\nby github.com/90N45-d3v" + "\033[39m" + "\033[38;1;231m" + "\n\n Launching bscan...")
+print("\033[38;5;27m" + "\nby github.com/0bo0l" + "\033[39m" + "\033[38;1;231m" + "\n\n Launching bscan...")
 
 import re
 import time
@@ -30,7 +30,7 @@ if os.path.exists("WiGLE.key"):
 ### functions
 
 def banner():
-	print("\033[38;5;27m" + "\nby github.com/90N45-d3v")
+	print("\033[38;5;27m" + "\nby github.com/0bo0l")
 
 def interface_list(): # List detected interfaces
 	if platform == "linux": # Linux
