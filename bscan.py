@@ -1,10 +1,8 @@
-# dBmonster - Track WiFi devices with their signal strength in dBm
-# by 90N45 - github.com/90N45-d3v
 
 import os
 
 os.system("clear")
-print("\r\033[38;5;172m" + "\n                                                   --=-+-=--\n                                                        \\\n                                                   ---=--+--=---\n                 ( ( >*< ) )                             |\\\n     _  ____          |                      _     ---=----+----=---\n    | ||  _ \\         |                     | |          |\n  __| || |_) | _ __  /_\\   ___   _ __   ___ | |_   ___  _|__\n / _` ||  _ < | '_ `'_  | / _ \\ | '_ \\ / __||  _| / _ \\|  __|\n| (_| || |_) || | | | | || (_) || | | |\\__ \\| |_ |  __/| |\n \\__,_||____/ |_| |_| |_| \\___/ |_| |_||___/ \\__| \\___||_|" + "\033[38;5;27m" + "\nby github.com/90N45-d3v" + "\033[39m" + "\033[38;1;231m" + "\n\n Launching dBmonster...")
+print("" + "\033[38;5;27m" + "\nby github.com/0bo0l + "\033[39m" + "\033[38;1;231m" + "\n\n Launching bscan...")
 
 import re
 import time
@@ -75,7 +73,7 @@ def interface_check():
 				wifi_state = int(os.popen("sudo airport en0 -I | grep init -c").read())
 
 def root_check():
-	user = os.popen("whoami") # Get current user who runs dBmonster
+	user = os.popen("whoami") # Get current user who runs bscan
 
 	if user.read() != "root\n":
 		print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " This tool needs root privileges (try: sudo)\n")
@@ -158,7 +156,7 @@ def mode2_lookup(device):
 		if connection == True:
 			wigle_wifi_url = "https://api.wigle.net/api/v2/network/search?onlymine=false&freenet=false&paynet=false&resultsPerPage=1&netid=" + device.replace(":","%3A")
 			wigle_bt_url = "https://api.wigle.net/api/v2/bluetooth/search?onlymine=false&showBt=true&showBle=true&resultsPerPage=1&netid=" + device.replace(":","%3A")
-			headers = {'User-Agent': 'dBmonster', 'Authorization': 'Basic ' + wigle_api_key}
+			headers = {'User-Agent': 'bscan', 'Authorization': 'Basic ' + wigle_api_key}
 
 			wigle_res = requests.get(wigle_wifi_url, headers=headers).json()
 			res_count = str(wigle_res).partition("'totalResults': ")[2].partition(",")[0]
@@ -318,9 +316,9 @@ def mode6_file_analytics(): # Analyse PCAP files
 	os.system("tshark -r " + file + " -T fields -e wlan.sa -e wlan.ssid -Y \"wlan.fc.type_subtype == 4 and !(wlan.ssid == \\\"\\\")\" | awk '!seen[$0]++'") # Filter for Probe Request from stations
 
 def mode7_from_file(): # Track MAC address from file
-	os.system("tshark -r " + file + " -T fields -e radiotap.dbm_antsignal -Y \"wlan.sa == " + device + "\" 2> /dev/null | cut -d , -f 2- > tmp_dBmonster.txt") # Filter Signals and save them to temporary file
+	os.system("tshark -r " + file + " -T fields -e radiotap.dbm_antsignal -Y \"wlan.sa == " + device + "\" 2> /dev/null | cut -d , -f 2- > tmp_bscan.txt") # Filter Signals and save them to temporary file
 
-	with open('tmp_dBmonster.txt') as dBm_signal:
+	with open('tmp_bscan.txt') as dBm_signal:
 		for line in dBm_signal:
 			x_values.append(next(index))
 			y_values.append(int(line))
@@ -394,7 +392,7 @@ while True:
 			os.system("tshark -i " + interface + " -I -c 1 ether src " + device + " 2> /dev/null > /dev/null")
 			os.system("say device detected") # Play sound message if found...
 		print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " START TRACKING...\n")
-		fig.canvas.manager.set_window_title("dBmonster: " + device) # Window title
+		fig.canvas.manager.set_window_title("bscan: " + device) # Window title
 		graph()
 		animation = FuncAnimation(fig, mode3_update, 2000)
 		plt.show()
@@ -422,7 +420,7 @@ while True:
 				os.system("tshark -i " + interface + " -I -c -f \"type mgt subtype deauth\" 2> /dev/null > /dev/null")
 				os.system("say deauthentication frame detected") # Play sound message if found...
 			print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " START TRACKING...\n")
-			fig.canvas.manager.set_window_title("dBmonster: Deauthentication Frames") # Window title
+			fig.canvas.manager.set_window_title("bscan: Deauthentication Frames") # Window title
 			graph()
 			animation = FuncAnimation(fig, mode4_deauth_frames, 2000)
 			plt.show()
@@ -435,7 +433,7 @@ while True:
 				os.system("tshark -i " + interface + " -I -c 1 -f \"type mgt subtype auth\" 2> /dev/null > /dev/null")
 				os.system("say authentication frame detected") # Play sound message if found...
 			print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " START TRACKING...\n")
-			fig.canvas.manager.set_window_title("dBmonster: Authentication Frames") # Window title
+			fig.canvas.manager.set_window_title("bscan: Authentication Frames") # Window title
 			graph()
 			animation = FuncAnimation(fig, mode4_auth_frames, 2000)
 			plt.show()
@@ -448,7 +446,7 @@ while True:
 				os.system("tshark -i " + interface + " -I -c 1 -f \"type mgt subtype probe-req\" 2> /dev/null > /dev/null")
 				os.system("say probe request detected") # Play sound message if found...
 			print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " START TRACKING...\n")
-			fig.canvas.manager.set_window_title("dBmonster: Probe Request Frames") # Window title
+			fig.canvas.manager.set_window_title("bscan: Probe Request Frames") # Window title
 			graph()
 			animation = FuncAnimation(fig, mode4_probe_frames, 2000)
 			plt.show()
@@ -461,7 +459,7 @@ while True:
 				os.system("tshark -i " + interface + " -I -c 1 -f \"type mgt subtype beacon\" 2> /dev/null > /dev/null")
 				os.system("say beacon frame detected") # Play sound message if found...
 			print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " START TRACKING...\n")
-			fig.canvas.manager.set_window_title("dBmonster: Beacon Frames") # Window title
+			fig.canvas.manager.set_window_title("bscan: Beacon Frames") # Window title
 			graph()
 			animation = FuncAnimation(fig, mode4_beacon_frames, 2000)
 			plt.show()
@@ -490,7 +488,7 @@ while True:
 		file = input("\033[38;5;172m" + "\n  [*]" + "\033[39m" + " Enter path to PCAP file: ")
 		device = input("\033[38;5;172m" + "  [*]" + "\033[39m" + " MAC address to track: ")
 		print("\033[38;5;206m" + "\n [!]" + "\033[39m" + " Searching for " + device + " in file " + file + "...")
-		fig.canvas.manager.set_window_title("dBmonster: " + device) # Window title
+		fig.canvas.manager.set_window_title("bscan: " + device) # Window title
 		ax.set_xlabel('Amount of recieved packets') # Graph x axis label text
 		ax.set_ylabel('Signal strength [dBm]') # Graph y axis label text
 		ax.xaxis.label.set_color('#3f64d9') # Graph x axis label color
@@ -498,13 +496,13 @@ while True:
 		graph()
 		mode7_from_file()
 		plt.show()
-		if os.path.exists("tmp_dBmonster.txt"): # If it exists, delete temporary file
-			os.remove("tmp_dBmonster.txt")
+		if os.path.exists("tmp_bscan.txt"): # If it exists, delete temporary file
+			os.remove("tmp_bscan.txt")
 		continue
 
 	elif mode == "0": # EXIT
-		if os.path.exists("tmp_dBmonster.txt"): # If it exists, delete temporary file
-			os.remove("tmp_dBmonster.txt")
+		if os.path.exists("tmp_bscan.txt"): # If it exists, delete temporary file
+			os.remove("tmp_bscan.txt")
 
 		print("\033[38;1;231m" + "\nGOOD BYE!\n" + "\033[0m")
 		exit()
